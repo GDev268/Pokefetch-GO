@@ -6,7 +6,6 @@ import (
 	"math"
 	"math/rand/v2"
 	"os"
-	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
@@ -325,21 +324,4 @@ func ChangeInvalidNames(pokemonID int, pokemon Pokemon) string {
 	default:
 		return pokemon.Name
 	}
-}
-
-func TryGenerateColorscript(pokemonName string, shiny bool) bool {
-	args := []string{"-n", pokemonName, "--no-title"}
-
-	if shiny {
-		args = append(args, "--shiny")
-	}
-
-	cmd := exec.Command("pokemon-colorscripts", args...)
-
-	output, err := cmd.Output()
-	if err != nil {
-		return false
-	}
-
-	return len(output) > 0
 }
