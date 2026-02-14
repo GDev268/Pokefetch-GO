@@ -42,23 +42,23 @@ func (pf *PokeFetch) Run(pokemonDisplay string) error {
 		},
 	}
 
-	var display = config["display"].(map[string]interface{})
-
-	if display == nil {
+	display, ok := config["display"].(map[string]interface{})
+	if !ok || display == nil {
 		display = make(map[string]interface{})
 		config["display"] = display
 	}
 
-	var color = display["color"].(map[string]interface{})
-
-	if color == nil {
+	color, ok := display["color"].(map[string]interface{})
+	if !ok || color == nil {
 		color = make(map[string]interface{})
+		display["color"] = color
 	}
 
+	// Now safe to modify
 	color["title"] = pf.colorFmt
 	color["keys"] = pf.colorFmt
 
-	var modules = []interface{}{}
+	var modules []interface{}
 
 	modules = append(modules, "title")
 	modules = append(modules, "separator")

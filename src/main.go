@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"os/exec"
@@ -25,7 +26,12 @@ func main() {
 		panic(err)
 	}
 
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(resp.Body)
 
 	var pokemon Pokemon
 
@@ -33,14 +39,11 @@ func main() {
 		panic(err)
 	}
 
-	var pokemonName = StripPokemonForm(pokemon.Name)
+	var pokemonName = StripPokemonForm(ChangeInvalidNames(pokemon.ID, pokemon))
 
 	var display = FormatPokemonDisplay(pokemonName, ExtractTypes(&pokemon), isShiny)
 
-	home, homeErr := os.UserHomeDir()
-	if err != nil {
-		panic(homeErr)
-	}
+	home, _ := os.UserHomeDir()
 
 	cached := filepath.Join(home, ".cache", "pokemon.txt")
 	ffCfg := filepath.Join(home, ".config", "fastfetch", "config.jsonc")
@@ -63,13 +66,9 @@ func main() {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	cmdErr1 := cmd.Run()
-	if err != nil {
-		_, err := fmt.Fprintln(os.Stderr, "Failed to generate Pokémon ASCII!")
-		if err != nil {
-			return
-		}
-		panic(cmdErr1)
+	cmdErr := cmd.Run()
+	if cmdErr != nil {
+		return
 	}
 
 	var fetch, fetchErr = NewPokeFetch(cached, ffCfg)
@@ -86,13 +85,16 @@ func main() {
 
 	cmd2 := exec.Command("fastfetch")
 
-	// Attach output streams to the terminal
 	cmd2.Stdout = os.Stdout
 	cmd2.Stderr = os.Stderr
 
 	cmdErr2 := cmd2.Run()
 	if cmdErr2 != nil {
-		fmt.Fprintln(os.Stderr, "Failed to run fastfetch!")
+		_, fprintErr := fmt.Fprintln(os.Stderr, "Failed to run fastfetch!")
+
+		if fprintErr != nil {
+			panic(fprintErr)
+		}
 		panic(cmdErr2)
 	}
 }

@@ -97,8 +97,8 @@ func ExtractColors(path string) (string, uint, error) {
 
 	for _, match := range matches {
 		var r, _ = strconv.Atoi(match[1])
-		var g, _ = strconv.Atoi(match[1])
-		var b, _ = strconv.Atoi(match[1])
+		var g, _ = strconv.Atoi(match[2])
+		var b, _ = strconv.Atoi(match[3])
 
 		var dark = r < 90 && g < 90 && b < 90
 		var light = r > 180 && g > 180 && b > 180
@@ -192,29 +192,6 @@ func PokemonTypeColor(pokemonType string) uint8 {
 	}
 }
 
-func AllPokemonTypes() []string {
-	return []string{
-		"normal",
-		"fire",
-		"water",
-		"electric",
-		"grass",
-		"ice",
-		"fighting",
-		"poison",
-		"ground",
-		"flying",
-		"psychic",
-		"bug",
-		"rock",
-		"ghost",
-		"dragon",
-		"dark",
-		"steel",
-		"fairy",
-	}
-}
-
 func CreateTextBadge(text string, bgColor uint8, bold bool) string {
 	var fgColor = ForegroundForBG(bgColor)
 
@@ -283,7 +260,7 @@ func StripPokemonForm(name string) string {
 	return name
 }
 
-func ChangeInvalidNames(pokemonID int, pokemon map[string]interface{}) string {
+func ChangeInvalidNames(pokemonID int, pokemon Pokemon) string {
 	switch pokemonID {
 	case 29:
 		return "nidoran-f"
@@ -346,10 +323,7 @@ func ChangeInvalidNames(pokemonID int, pokemon map[string]interface{}) string {
 	case 902:
 		return "basculegion"
 	default:
-		if name, ok := pokemon["name"].(string); ok {
-			return name
-		}
-		return ""
+		return pokemon.Name
 	}
 }
 
