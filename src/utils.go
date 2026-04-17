@@ -141,7 +141,7 @@ func Module(t, key, color string) interface{} {
 
 func ForegroundForBG(bg uint8) uint8 {
 	switch bg {
-	case 1 | 5 | 8 | 21 | 99 | 236 | 55:
+	case 1, 5, 8, 21, 31, 55, 98, 99, 124, 127, 236:
 		return 255
 	default:
 		return 232
@@ -194,17 +194,12 @@ func PokemonTypeColor(pokemonType string) uint8 {
 func CreateTextBadge(text string, bgColor uint8, bold bool) string {
 	var fgColor = ForegroundForBG(bgColor)
 
-	var fg = ansiFG(fgColor)
-	var bg = ansiBG(bgColor)
-	var boldCode string
-
+	style := ""
 	if bold {
-		boldCode = "\x1b[1m"
-	} else {
-		boldCode = ""
+		style = "\x1b[1m"
 	}
 
-	return fmt.Sprintf("%s%s%s %s %s%s", boldCode, fg, bg, text, ansiReset(), ansiReset())
+	return fmt.Sprintf("%s\x1b[38;5;%dm\x1b[48;5;%dm %s \x1b[0m", style, fgColor, bgColor, text)
 }
 
 func GetTypeBadges(types []string) string {
@@ -233,23 +228,20 @@ const POKEMON_NAME_COLOR = 15
 const POKEMON_SHINY_COLOR = 220
 
 func FormatPokemonDisplay(name string, types []string, isShiny bool) string {
-	var capitalizedName = Capitalize(name)
+	var parts []string
 
-	var nameBadge = CreateTextBadge(capitalizedName, POKEMON_NAME_COLOR, true)
-
-	var shinyBadge string
+	parts = append(parts, CreateTextBadge(Capitalize(name), POKEMON_NAME_COLOR, true))
 
 	if isShiny {
-		shinyBadge = CreateTextBadge(SHINY_TEXT, POKEMON_SHINY_COLOR, true)
-	} else {
-		shinyBadge = ""
+		parts = append(parts, CreateTextBadge("★ Shiny! ★", POKEMON_SHINY_COLOR, true))
 	}
 
-	var typeBadges = GetTypeBadges(types)
+	for _, t := range types {
+		color := PokemonTypeColor(t)
+		parts = append(parts, CreateTextBadge(strings.ToUpper(t), color, false))
+	}
 
-	var pokemonInfo = fmt.Sprintf("%s %s %s", nameBadge, shinyBadge, typeBadges)
-
-	return pokemonInfo
+	return strings.Join(parts, " ")
 }
 
 func StripPokemonForm(name string) string {
