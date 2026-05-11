@@ -70,38 +70,38 @@ func (pf *PokeFetch) Run(pokemonDisplay string) error {
 
 	// 3. SYSTEM INFO
 	// PaddedKey provides the "│" border on the far left
-	modules = append(modules, map[string]interface{}{"type": "title", "key": PaddedKey("", "user")})
-	modules = append(modules, map[string]interface{}{"type": "os", "key": PaddedKey("󰋄", "distro")})
-	modules = append(modules, map[string]interface{}{"type": "kernel", "key": PaddedKey("⚙", "kernel")})
-	modules = append(modules, map[string]interface{}{"type": "uptime", "key": PaddedKey("󱎫", "uptime")})
-	modules = append(modules, map[string]interface{}{"type": "shell", "key": PaddedKey("󱆃", "shell")})
-	modules = append(modules, map[string]interface{}{"type": "terminal", "key": PaddedKey("", "term")})
+	modules = append(modules, map[string]interface{}{"type": "title", "key": PaddedKey("\uf007", "user")})
+	modules = append(modules, map[string]interface{}{"type": "os", "key": PaddedKey("\xf3\xb0\x8b\x84", "distro")})
+	modules = append(modules, map[string]interface{}{"type": "kernel", "key": PaddedKey("\xe2\x9a\x99", "kernel")})
+	modules = append(modules, map[string]interface{}{"type": "uptime", "key": PaddedKey("\xf3\xb1\x8e\xab", "uptime")})
+	modules = append(modules, map[string]interface{}{"type": "shell", "key": PaddedKey("\xf3\xb1\x86\x83", "shell")})
+	modules = append(modules, map[string]interface{}{"type": "terminal", "key": PaddedKey("\xef\x92\x89", "term")})
 
 	modules = append(modules, map[string]interface{}{
 		"type":   "cpu",
-		"key":    PaddedKey("", "cpu"),
+		"key":    PaddedKey("\xef\x92\xbc", "cpu"),
 		"format": "{1}",
 	})
 	modules = append(modules, map[string]interface{}{
 		"type":   "gpu",
-		"key":    PaddedKey("󰢮", "gpu"),
+		"key":    PaddedKey("\xf3\xb0\xa2\xae", "gpu"),
 		"format": "{2}",
 	})
 
-	modules = append(modules, map[string]interface{}{"type": "memory", "key": PaddedKey("󰍛", "memory")})
-	modules = append(modules, map[string]interface{}{"type": "disk", "key": PaddedKey("󰋊", "disk")})
+	modules = append(modules, map[string]interface{}{"type": "memory", "key": PaddedKey("\xf3\xb0\x8d\x9b", "memory")})
+	modules = append(modules, map[string]interface{}{"type": "disk", "key": PaddedKey("\xf3\xb0\x8b\x8a", "disk")})
 
 	// 4. POKEMON INFO
 	modules = append(modules, map[string]interface{}{
 		"type":   "custom",
-		"key":    PaddedKey("󰐿", "poke"),
+		"key":    PaddedKey("\xf3\xb0\x90\xbf", "poke"),
 		"format": pokemonDisplay,
 	})
 
 	// 5. COLORS
 	modules = append(modules, map[string]interface{}{
 		"type":   "colors",
-		"key":    PaddedKey("󰈊", "colors"),
+		"key":    PaddedKey("\xf3\xb0\x88\x8a", "colors"),
 		"symbol": "circle",
 	})
 
